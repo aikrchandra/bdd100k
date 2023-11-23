@@ -98,3 +98,6 @@ def preparesample(img_source_path,label_source_path,dest_path,train_sample_size=
 
 def frameextractor():
     pass
+
+def customhello():
+    print("Hello from Github!!")
