@@ -17,7 +17,8 @@ def bdd100klabeltoYOLOlabelformat(label_json_path,save_path,image_size,class_lab
         data = json.load(json_file)
         if not os.path.exists(save_path):
             os.makedirs(save_path)
-        for item in tqdm(data):
+#        for item in tqdm(data):
+        for item in data:
             file_name,content = converbddtoYOLOlabelformat(item,image_size,class_labels)
             writelabelfile(save_path+"//"+file_name,content)
 
@@ -28,27 +29,30 @@ def converbddtoYOLOlabelformat(item,image_size,class_labels):
     img_labels = [l for l in item['labels']]
     label_annotation =''
     for label in img_labels:
-        y1 = label['box2d']['y1']
-        x2 = label['box2d']['x2']
-        x1 = label['box2d']['x1']
-        y2 = label['box2d']['y2']
-        class_name = label['category']
-        class_id = class_labels[class_name]
+        cat = label['category']
+        if label['category'] in class_labels:
+            y1 = label['box2d']['y1']
+            x2 = label['box2d']['x2']
+            x1 = label['box2d']['x1']
+            y2 = label['box2d']['y2']
 
-        bbox_x = (x1 + x2) / 2
-        bbox_y = (y1 + y2) / 2
+            class_name = label['category']
+            class_id = class_labels[class_name]
 
-        bbox_width = x2 - x1
-        bbox_height = y2 - y1
+            bbox_x = (x1 + x2) / 2
+            bbox_y = (y1 + y2) / 2
 
-        bbox_x_norm = bbox_x / img_w
-        bbox_y_norm = bbox_y / img_h
+            bbox_width = x2 - x1
+            bbox_height = y2 - y1
 
-        bbox_width_norm = bbox_width / img_w
-        bbox_height_norm = bbox_height / img_h
+            bbox_x_norm = bbox_x / img_w
+            bbox_y_norm = bbox_y / img_h
 
-        label_annotation += '{} {} {} {} {}\n'.format(
-            class_id, bbox_x_norm, bbox_y_norm, bbox_width_norm, bbox_height_norm)
+            bbox_width_norm = bbox_width / img_w
+            bbox_height_norm = bbox_height / img_h
+
+            label_annotation += '{} {} {} {} {}\n'.format(
+                class_id, bbox_x_norm, bbox_y_norm, bbox_width_norm, bbox_height_norm)
     return img_label_txt,label_annotation
 
 def writelabelfile(file_path,content):
@@ -65,8 +69,8 @@ def preparesample(img_source_path,label_source_path,dest_path,train_sample_size=
         for file in os.listdir(label_source_path+"/train"):
             cnt += 1
             img_file_name = file[:-4]+".jpg"
-            shutil.copyfile(label_source_path+"/train"+"/"+file,dest_path+"/labels/train"+"/"+file)
-            shutil.copyfile(img_source_path+"/train"+"/"+img_file_name,dest_path+"/images/train"+"/"+img_file_name)
+            shutil.copyfile(label_source_path+"\\train"+"\\"+file,dest_path+"\\labels\\train"+"\\"+file)
+            shutil.copyfile(img_source_path+"\\train"+"\\"+img_file_name,dest_path+"\\images\\train"+"\\"+img_file_name)
             if cnt == train_sample_size:
                 break
 
@@ -99,5 +103,3 @@ def preparesample(img_source_path,label_source_path,dest_path,train_sample_size=
 def frameextractor():
     pass
 
-def customhello():
-    print("Hello from Github!! xcxvcxvcx")
